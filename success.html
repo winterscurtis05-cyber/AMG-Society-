@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — AMG SOCIETY</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0}
+    body{min-height:100vh;display:grid;place-items:center;text-align:center;padding:40px 24px;
+      background:radial-gradient(circle at 50% 30%,#15151a,#070709 80%);color:#f4f1ea;font-family:'Jost',sans-serif}
+    .crown{width:64px;height:40px;fill:none;stroke:url(#g);stroke-width:3;margin:0 auto 22px}
+    .eyebrow{font-family:'Jost';font-weight:500;letter-spacing:.28em;text-transform:uppercase;font-size:.72rem;color:#c9a24b;margin-bottom:16px}
+    h1{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(2rem,6vw,3.4rem);line-height:1.05;margin-bottom:18px}
+    h1 em{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+      background:linear-gradient(120deg,#e8c874,#c9a24b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    p{max-width:520px;margin:0 auto 14px;color:#b9b3a8;line-height:1.65;font-weight:300}
+    .ref{font-size:.8rem;color:#6f6a60;letter-spacing:.05em;margin-top:6px;word-break:break-all}
+    .actions{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .btn{display:inline-block;padding:15px 30px;border-radius:2px;text-decoration:none;font-family:'Jost';font-weight:500;
+      letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;transition:transform .3s,opacity .3s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-gold{background:linear-gradient(120deg,#e8c874,#c9a24b);color:#141210}
+    .btn-ghost{border:1px solid rgba(201,162,75,.5);color:#e8c874}
+  </style>
+</head>
+<body>
+  <svg width="0" height="0"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8c874"/><stop offset="1" stop-color="#c9a24b"/></linearGradient></defs></svg>
+  <main>
+    <svg class="crown" viewBox="0 0 64 40" aria-hidden="true"><path d="M4 36h56l-4-26-13 11L32 4 21 21 8 10z"/></svg>
+    <p class="eyebrow"><span>❖</span>&nbsp; All Money &nbsp;<span>❖</span></p>
+    <h1>Order <em>confirmed.</em></h1>
+    <p>Thank you — your order is in. Every piece is embroidered to order and ships from Paterson, NJ in 2–7 business days. A receipt is on its way to your email.</p>
+    <p class="ref" id="ref"></p>
+    <div class="actions">
+      <a class="btn btn-gold" href="index.html">Back to Store</a>
+      <a class="btn btn-ghost" href="https://www.instagram.com/pak_amgallmighty/" target="_blank" rel="noopener">Follow @AMG</a>
+    </div>
+  </main>
+  <script>
+    // Clear the saved bag now that the order is placed, and show the order ref.
+    try { localStorage.removeItem('amg_cart'); } catch (e) {}
+    var id = new URLSearchParams(location.search).get('session_id');
+    if (id) document.getElementById('ref').textContent = 'Order reference: ' + id;
+  </script>
+</body>
+</html>

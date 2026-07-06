@@ -1,0 +1,10 @@
+{
+  "name": "amg-society-checkout",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Stripe Checkout serverless function for the AMG Society store (deployed on Vercel). The site itself is static and hosted on GitHub Pages.",
+  "dependencies": {
+    "stripe": "^16.12.0"
+  }
+}

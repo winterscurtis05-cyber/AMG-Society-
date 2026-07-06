@@ -1,0 +1,13 @@
+# Dependencies (Vercel installs these from package.json)
+node_modules/
+
+# Vercel
+.vercel/
+
+# macOS
+.DS_Store
+
+# Logs / env
+*.log
+.env
+.env.*

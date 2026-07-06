@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Archive — AMG SOCIETY</title>
+  <meta name="description" content="The AMG Society design archive — concepts, drops, and direction." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="gallery.css" />
+</head>
+<body>
+
+  <div class="announce"><span>❖&nbsp;&nbsp;THE ARCHIVE&nbsp;&nbsp;·&nbsp;&nbsp;EVERY CONCEPT, DROP &amp; DESIGN&nbsp;&nbsp;·&nbsp;&nbsp;ALL MONEY&nbsp;&nbsp;❖</span></div>
+
+  <header class="nav shrink" id="nav">
+    <div class="nav-inner">
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span></button>
+      <a class="logo" href="index.html" data-cursor>
+        <svg class="crown" viewBox="0 0 64 40" aria-hidden="true"><path d="M4 36h56l-4-26-13 11L32 4 21 21 8 10z"/></svg>
+        <span class="logo-name">AMG SOCIETY</span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#lookbook">Lookbook</a>
+        <a href="gallery.html" class="active">Archive</a>
+        <a href="index.html#join">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="index.html#shop" class="btn btn-gold nav-cta" data-magnetic data-cursor>Shop the Drop</a>
+        <button class="icon-btn cart-toggle" id="cartToggle" aria-label="Cart" data-cursor>
+          <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 12.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <header class="archive-header">
+      <p class="eyebrow"><span class="pulse"></span>The Archive</p>
+      <h1 class="archive-title">Every concept. <em>Every drop.</em></h1>
+      <p class="archive-sub">A living archive of <span id="countNum">105</span> designs — directions, mockups, and ideas behind AMG Society. Click any piece to view it full-size.</p>
+    </header>
+
+    <section class="gallery-wrap">
+      <div class="gallery js" id="gallery"></div>
+      <noscript><p style="text-align:center;color:#9b958a;padding:40px">Enable JavaScript to view the archive.</p></noscript>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><svg class="crown" viewBox="0 0 64 40" aria-hidden="true"><path d="M4 36h56l-4-26-13 11L32 4 21 21 8 10z"/></svg><span class="logo-name">AMG SOCIETY</span></a>
+        <p>All Money. Premium embroidered apparel, made to order in Paterson, New Jersey.</p>
+      </div>
+      <div class="footer-col"><h4>Shop</h4><a href="index.html#shop">The Collection</a><a href="index.html#lookbook">Lookbook</a><a href="gallery.html">Archive</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="#">Sizing &amp; Fit</a><a href="#">Shipping &amp; Returns</a><a href="index.html#join">Contact</a></div>
+      <div class="footer-col"><h4>Connect</h4><a href="https://www.instagram.com/pak_amgallmighty/" target="_blank" rel="noopener" data-cursor>Instagram</a><a href="mailto:amgstudiosnj@gmail.com">amgstudiosnj@gmail.com</a></div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 AMG Society · All Money.</span>
+      <span>The Archive · 105 designs</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+    <figure class="lb-stage"><img id="lbImg" src="" alt="AMG Society design" /></figure>
+    <button class="lb-nav lb-next" id="lbNext" aria-label="Next">›</button>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+
+  <script src="assets/gallery/manifest.js?v=20260704"></script>
+  <script src="gallery.js"></script>
+  <script src="cart.js"></script>
+</body>
+</html>
