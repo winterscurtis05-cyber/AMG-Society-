@@ -39,6 +39,16 @@ export default async function handler(req, res) {
   setCors(res, origin);
 
   if (req.method === 'OPTIONS') return res.status(204).end();
+  // TEMP diagnostic (GET): reports whether env vars are wired, without leaking secrets. Remove after.
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      ok: true,
+      hasStripeKey: Boolean(process.env.STRIPE_SECRET_KEY),
+      stripeKeyPrefix: (process.env.STRIPE_SECRET_KEY || '').slice(0, 8),
+      hasSiteOrigin: Boolean(process.env.SITE_ORIGIN),
+      siteOrigin: process.env.SITE_ORIGIN || null,
+    });
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
