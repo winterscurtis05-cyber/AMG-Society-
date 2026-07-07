@@ -3,6 +3,8 @@
   'use strict';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(pointer:fine)').matches;
+  // Phones / touch / narrow screens: disable heavy effects to prevent mobile tab reloads on fast scroll.
+  const mobile = !fine || matchMedia('(max-width: 820px)').matches;
   const hasGSAP = typeof gsap !== 'undefined';
   const hasST = hasGSAP && typeof ScrollTrigger !== 'undefined';
   const hasLenis = typeof Lenis !== 'undefined';
@@ -15,7 +17,7 @@
 
   /* ---------- Lenis smooth scroll ---------- */
   let lenis = null;
-  if (!reduce && hasLenis) {
+  if (!reduce && hasLenis && !mobile) {
     lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
     if (hasGSAP) {
       lenis.on('scroll', () => { if (hasST) ScrollTrigger.update(); });
@@ -62,7 +64,7 @@
     gsap.set('[data-hero]', { opacity: 0, y: 30 });
     gsap.to('[data-hero]', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.13, delay: 0.25 });
 
-    gsap.utils.toArray('[data-parallax]').forEach((el) => {
+    if (!mobile) gsap.utils.toArray('[data-parallax]').forEach((el) => {
       const sp = parseFloat(el.dataset.parallax) || 0.2;
       gsap.to(el, { yPercent: -sp * 100, ease: 'none', scrollTrigger: { trigger: el.closest('section') || el, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
@@ -80,7 +82,7 @@
   /* ---------- Hero particle field ---------- */
   (function () {
     const canvas = document.getElementById('particles');
-    if (!canvas || reduce) return;
+    if (!canvas || reduce || mobile) return;
     const ctx = canvas.getContext('2d');
     let w, h, dpr, nodes = [], raf = null, running = false;
     const mouse = { x: -999, y: -999 };
@@ -126,8 +128,8 @@
     } else start();
   })();
 
-  /* ---------- Product tilt + cursor spotlight ---------- */
-  document.querySelectorAll('.product').forEach((card) => {
+  /* ---------- Product tilt + cursor spotlight (desktop only) ---------- */
+  if (!mobile) document.querySelectorAll('.product').forEach((card) => {
     const media = card.querySelector('.product-media');
     card.addEventListener('pointermove', (e) => {
       const r = card.getBoundingClientRect();
