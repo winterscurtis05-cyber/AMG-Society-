@@ -71,6 +71,12 @@ export default async function handler(req, res) {
 
     const redirectBase = SITE_ORIGIN !== '*' ? SITE_ORIGIN : (req.headers.origin || '');
 
+    // Shipping: FREE on orders $120+, otherwise a flat $6.
+    const FREE_SHIP_THRESHOLD = 12000; // $120 in cents
+    const SHIP_FEE = 600; // $6 in cents
+    const subtotal = line_items.reduce((s, li) => s + li.price_data.unit_amount * li.quantity, 0);
+    const shipAmount = subtotal >= FREE_SHIP_THRESHOLD ? 0 : SHIP_FEE;
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items,
@@ -78,15 +84,12 @@ export default async function handler(req, res) {
       cancel_url: `${redirectBase}/cancel.html`,
       shipping_address_collection: { allowed_countries: ['US'] },
       phone_number_collection: { enabled: true },
-      // Free standard shipping for now (matches "complimentary shipping"
-      // messaging). To add paid tiers or a $150 free-shipping threshold,
-      // manage Shipping rates in the Stripe Dashboard and reference them here.
       shipping_options: [
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 0, currency: 'usd' },
-            display_name: 'Standard Shipping',
+            fixed_amount: { amount: shipAmount, currency: 'usd' },
+            display_name: shipAmount === 0 ? 'Free Shipping (orders $120+)' : 'Standard Shipping',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 2 },
               maximum: { unit: 'business_day', value: 7 },
