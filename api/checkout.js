@@ -39,6 +39,31 @@ export default async function handler(req, res) {
   setCors(res, origin);
 
   if (req.method === 'OPTIONS') return res.status(204).end();
+  // TEMP diagnostic: which Stripe account is this key + recent charges. Remove after.
+  if (req.method === 'GET') {
+    try {
+      const acct = await stripe.accounts.retrieve();
+      const charges = await stripe.charges.list({ limit: 6 });
+      return res.status(200).json({
+        account: {
+          id: acct.id,
+          name: (acct.business_profile && acct.business_profile.name) || acct.settings?.dashboard?.display_name || null,
+          email: acct.email,
+          charges_enabled: acct.charges_enabled,
+          payouts_enabled: acct.payouts_enabled,
+        },
+        recentCharges: charges.data.map((c) => ({
+          amount: c.amount / 100,
+          status: c.status,
+          livemode: c.livemode,
+          created: new Date(c.created * 1000).toISOString(),
+          method: c.payment_method_details && c.payment_method_details.type,
+        })),
+      });
+    } catch (e) {
+      return res.status(200).json({ diagError: e.message });
+    }
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
