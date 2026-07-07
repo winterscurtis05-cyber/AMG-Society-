@@ -52,7 +52,7 @@
   });
 
   /* ---------- GSAP reveals / parallax / hero / counters ---------- */
-  if (canAnim) {
+  if (canAnim && !mobile) {
     gsap.set('[data-reveal]', { opacity: 0, y: 42 });
     gsap.set('[data-reveal="scale"]', { opacity: 0, y: 0, scale: 0.92 });
     ScrollTrigger.batch('[data-reveal]', {
@@ -76,6 +76,7 @@
 
     ScrollTrigger.refresh();
   } else {
+    html.classList.add('no-anim'); // mobile/reduced: show content immediately, no scroll-reveal
     document.querySelectorAll('[data-count]').forEach((el) => (el.textContent = el.dataset.count));
   }
 
