@@ -80,6 +80,10 @@ export default async function handler(req, res) {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items,
+      // Let customers enter a promo code (e.g. the spin-wheel SOCIETY5/SOCIETY10/
+      // SOCIETY15 codes). Codes + their "first order only" restriction are configured in
+      // the Stripe Dashboard; Stripe validates and applies them here.
+      allow_promotion_codes: true,
       success_url: `${redirectBase}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${redirectBase}/cancel.html`,
       shipping_address_collection: { allowed_countries: ['US'] },

@@ -231,6 +231,113 @@
     });
   });
 
+  /* ---------- Spin-to-win first-visit popup ---------- */
+  (function spinToWin() {
+    const modal = document.getElementById('spinModal');
+    if (!modal) return;                          // only exists on the homepage
+    const KEY = 'amgSpinDone';
+    const force = /[?&]spin=1\b/.test(location.search); // preview toggle: ...?spin=1 always shows it
+    if (!force && localStorage.getItem(KEY)) return;    // otherwise, first-time visitors only
+
+    const wheel = document.getElementById('wheel');
+    const step1 = document.getElementById('spinStep1');
+    const step2 = document.getElementById('spinStep2');
+    const step3 = document.getElementById('spinStep3');
+    const form = document.getElementById('spinForm');
+    const emailInput = document.getElementById('spinEmail');
+    const spinBtn = document.getElementById('spinBtn');
+    const copyBtn = document.getElementById('spinCopy');
+    const prizeEl = document.getElementById('spinPrize');
+    const codeEl = document.getElementById('spinCode');
+
+    // 6 segments: 3× 5%, 2× 10%, 1× 15%  →  odds 50% / 33% / 17%
+    const PRIZES = [5, 10, 5, 15, 5, 10];
+    const CODES = { 5: 'SOCIETY5', 10: 'SOCIETY10', 15: 'SOCIETY15' };
+    const SEG = 360 / PRIZES.length;             // 60°
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Build the wheel: conic-gradient wedges + upright % labels.
+    const stops = PRIZES.map((p, i) =>
+      `${i % 2 === 0 ? '#141418' : '#d4af37'} ${i * SEG}deg ${(i + 1) * SEG}deg`).join(',');
+    wheel.style.background = `conic-gradient(${stops})`;
+    const labels = PRIZES.map((p, i) => {
+      const l = document.createElement('div');
+      l.className = 'wheel-label';
+      l.textContent = p + '%';
+      l.style.color = i % 2 === 0 ? '#f5f1e8' : '#16100a';
+      l.dataset.angle = i * SEG + SEG / 2;       // wedge center
+      wheel.appendChild(l);
+      return l;
+    });
+    function layout() {
+      const r = wheel.clientWidth * 0.33;
+      if (!r) return;
+      labels.forEach((l) => {
+        const a = +l.dataset.angle;
+        l.style.transform = `translate(-50%,-50%) rotate(${a}deg) translateY(-${r}px) rotate(${-a}deg)`;
+      });
+    }
+    window.addEventListener('resize', layout);
+
+    // Lead storage — placeholder. TODO: POST {email,prize,code} to the GoDaddy
+    // email/list endpoint here instead of (or in addition to) localStorage.
+    let leadIdx = -1;
+    function readLeads() { try { return JSON.parse(localStorage.getItem('amgSpinLeads') || '[]'); } catch (e) { return []; } }
+    function writeLeads(a) { try { localStorage.setItem('amgSpinLeads', JSON.stringify(a)); } catch (e) {} }
+    function saveEmail(email) { const a = readLeads(); leadIdx = a.push({ email, prize: null, code: null, at: new Date().toISOString() }) - 1; writeLeads(a); }
+    function saveResult(prize, code) { const a = readLeads(); if (a[leadIdx]) { a[leadIdx].prize = prize; a[leadIdx].code = code; writeLeads(a); } }
+
+    const markDone = () => { try { localStorage.setItem(KEY, '1'); } catch (e) {} };
+    const openModal = () => { modal.hidden = false; html.style.overflow = 'hidden'; requestAnimationFrame(() => modal.classList.add('open')); };
+    const closeModal = () => { modal.classList.remove('open'); markDone(); html.style.overflow = ''; setTimeout(() => { modal.hidden = true; }, 400); };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!emailInput.value.trim()) return;
+      saveEmail(emailInput.value.trim());
+      step1.hidden = true;
+      step2.hidden = false;
+      layout();                                   // wheel is measurable now
+      requestAnimationFrame(layout);              // ...and again once layout settles
+    });
+
+    let spun = false;
+    spinBtn.addEventListener('click', () => {
+      if (spun) return;
+      spun = true;
+      spinBtn.disabled = true;
+      const target = Math.floor(Math.random() * PRIZES.length);
+      const prize = PRIZES[target];
+      const center = target * SEG + SEG / 2;
+      const jitter = Math.random() * (SEG - 20) - (SEG - 20) / 2; // stays inside the wedge
+      wheel.style.transform = `rotate(${360 * 6 - center + jitter}deg)`;
+      const reveal = () => {
+        prizeEl.textContent = prize + '%';
+        codeEl.textContent = CODES[prize];
+        saveResult(prize, CODES[prize]);
+        markDone();
+        step2.hidden = true;
+        step3.hidden = false;
+      };
+      if (reduce) setTimeout(reveal, 250);
+      else wheel.addEventListener('transitionend', reveal, { once: true });
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const done = () => { copyBtn.textContent = 'Copied ✓'; codeEl.classList.add('copied'); setTimeout(() => { copyBtn.textContent = 'Copy code'; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(codeEl.textContent).then(done).catch(done);
+      else done();
+    });
+
+    document.getElementById('spinClose').addEventListener('click', closeModal);
+    document.getElementById('spinDecline').addEventListener('click', closeModal);
+    document.getElementById('spinBackdrop').addEventListener('click', closeModal);
+    document.getElementById('spinShop').addEventListener('click', closeModal); // close, then jump to the drop
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+    setTimeout(openModal, force ? 300 : 6000);    // instant in preview; 6s into the first real visit
+  })();
+
   /* ---------- Newsletter ---------- */
   const jf = document.getElementById('joinForm'), jn = document.getElementById('joinNote');
   jf.addEventListener('submit', (e) => { e.preventDefault(); jf.reset(); jf.hidden = true; jn.hidden = false; });
